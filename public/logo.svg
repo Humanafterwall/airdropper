@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Parachute canopy -->
+  <path d="M8 18C8 10.268 14.268 4 22 4h4c7.732 0 14 6.268 14 14" stroke="#3B82F6" stroke-width="2.5" fill="#3B82F6" fill-opacity="0.15"/>
+  <path d="M8 18c0-4 3.5-8 8-9s5.5 5 8 5 4.5-6 8-5 8 5 8 9" stroke="#3B82F6" stroke-width="2" fill="#60A5FA" fill-opacity="0.2"/>
+  <!-- Parachute strings -->
+  <line x1="10" y1="17" x2="19" y2="30" stroke="#3B82F6" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="24" y1="13" x2="24" y2="30" stroke="#3B82F6" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="38" y1="17" x2="29" y2="30" stroke="#3B82F6" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- Package box -->
+  <rect x="17" y="30" width="14" height="12" rx="2" stroke="#3B82F6" stroke-width="2.2" fill="#2563EB" fill-opacity="0.25"/>
+  <!-- Package cross ribbons -->
+  <line x1="24" y1="30" x2="24" y2="42" stroke="#60A5FA" stroke-width="1.5"/>
+  <line x1="17" y1="36" x2="31" y2="36" stroke="#60A5FA" stroke-width="1.5"/>
+  <!-- Small bow/knot on top -->
+  <circle cx="24" cy="30" r="1.5" fill="#60A5FA"/>
+</svg>

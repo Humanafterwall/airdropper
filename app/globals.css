@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --background: #000000;
+    --foreground: #ffffff;
+  }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+  }
+}
+
+/* ── Keyframes (outside @layer for broad compat) ── */
+
+@keyframes rotate-glow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes wave-shift-1 {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes wave-shift-2 {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(50%); }
+}
+@keyframes liquid-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}
+
+/* ── Neon glow card system ── */
+
+@layer components {
+  /* Base wrapper — shared by animated & static */
+  .neon-glow-wrapper {
+    position: relative;
+    border-radius: 1rem;
+    padding: 2px;
+    overflow: hidden;
+    box-shadow: 0 0 12px -2px color-mix(in srgb, var(--neon-color, #facc15) 40%, transparent);
+  }
+
+  /* Animated rotating glow (default) */
+  .neon-glow-wrapper::before {
+    content: "";
+    position: absolute;
+    inset: -50%;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0%, transparent 20%,
+      var(--neon-color, #facc15) 25%,
+      var(--neon-color, #facc15) 37%,
+      transparent 42%, transparent 100%
+    );
+    animation: rotate-glow 3s linear infinite;
+    z-index: 0;
+  }
+
+  /* Static glow — full even border, no rotation (higher specificity) */
+  .neon-glow-wrapper.neon-glow-static::before {
+    background: var(--neon-color, #facc15);
+    opacity: 0.6;
+    animation: none;
+    inset: 0;
+  }
+
+  .neon-glow-inner {
+    position: relative;
+    z-index: 1;
+    border-radius: calc(1rem - 2px);
+    background: black;
+  }
+
+  /* Accent colours */
+  .neon-yellow { --neon-color: #facc15; }
+  .neon-green  { --neon-color: #4ade80; }
+  .neon-blue   { --neon-color: #60a5fa; }
+  .neon-purple { --neon-color: #c084fc; }
+  .neon-white  { --neon-color: #94a3b8; }
+  .neon-gold   { --neon-color: #fbbf24; }
+  .neon-silver { --neon-color: #cbd5e1; }
+  .neon-bronze { --neon-color: #d97706; }
+}
+
+/* ── Thin scrollbar for leaderboard ── */
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+}
+
+/* ── Reduced motion ── */
+
+@media (prefers-reduced-motion: reduce) {
+  .neon-glow-wrapper::before { animation: none; opacity: 0.3; }
+}
