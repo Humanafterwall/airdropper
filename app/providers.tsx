@@ -8,16 +8,14 @@ import { WagmiProvider } from "wagmi";
 import { polygon, polygonAmoy } from "wagmi/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
-
-if (!projectId) {
-  console.warn("Missing NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID in .env.local");
-}
+const projectId =
+  process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ??
+  "c4f643d4ff7cc1379bc82404e5d2e988"; // fallback for dev/testnet
 
 function makeConfig() {
   return getDefaultConfig({
     appName: "Airdropper",
-    projectId: projectId as string,
+    projectId,
     chains: [polygonAmoy, polygon],
     ssr: false,
   });
