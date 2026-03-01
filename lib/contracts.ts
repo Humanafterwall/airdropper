@@ -13,8 +13,8 @@ export const POLYGON_AMOY_CHAIN_ID = 80002;
 // Project contract (Airdropper V01.3)
 // ============================================================
 export const PROJECT_CONTRACT = {
-  // Deployed on Polygon Amoy testnet (2026-02-27)
-  address: "0xcFEacFD2F5B3Ee260D567528853Fe13946Da401a",
+  // Deployed on Polygon Amoy testnet (2026-03-01) — V01.3 with configurable maxEntries
+  address: "0x0eca01d5b5adc10fb9fac6fe367c538b877399ab",
   abi: [
     // ---- Read functions (views) ----
     { type: "function", name: "currentRoundId", inputs: [], outputs: [{ name: "", type: "uint256" }], stateMutability: "view" },
@@ -67,7 +67,7 @@ export const PROJECT_CONTRACT = {
     { type: "function", name: "activateEmergencyRefund", inputs: [{ name: "roundId", type: "uint256" }], outputs: [], stateMutability: "nonpayable" },
     { type: "function", name: "resolveRoundFallback", inputs: [{ name: "roundId", type: "uint256" }], outputs: [], stateMutability: "nonpayable" },
     { type: "function", name: "setBlacklist", inputs: [{ name: "user", type: "address" }, { name: "onOff", type: "bool" }], outputs: [], stateMutability: "nonpayable" },
-    { type: "function", name: "scheduleRoundConfig", inputs: [{ name: "entryPrice_", type: "uint256" }, { name: "minPool_", type: "uint256" }, { name: "minTime_", type: "uint32" }, { name: "maxTotalEntries_", type: "uint32" }, { name: "winnersPerRound_", type: "uint8" }, { name: "payoutBps_", type: "uint16[]" }], outputs: [], stateMutability: "nonpayable" },
+    { type: "function", name: "scheduleRoundConfig", inputs: [{ name: "entryPrice_", type: "uint256" }, { name: "maxEntriesPerWallet_", type: "uint16" }, { name: "minPool_", type: "uint256" }, { name: "minTime_", type: "uint32" }, { name: "maxTotalEntries_", type: "uint32" }, { name: "winnersPerRound_", type: "uint8" }, { name: "payoutBps_", type: "uint16[]" }], outputs: [], stateMutability: "nonpayable" },
     { type: "function", name: "spendAggregator", inputs: [{ name: "to", type: "address" }, { name: "amount", type: "uint256" }, { name: "reasonHash", type: "bytes32" }], outputs: [], stateMutability: "nonpayable" },
     { type: "function", name: "sweepExpiredRefunds", inputs: [{ name: "roundId", type: "uint256" }], outputs: [], stateMutability: "nonpayable" },
   ],
@@ -77,9 +77,9 @@ export const PROJECT_CONTRACT = {
 // USDC contract (ERC20 — for approve + balanceOf)
 // ============================================================
 export const USDC_CONTRACT = {
-  // TestUSDC on Polygon Amoy testnet (2026-02-27)
+  // TestUSDC on Polygon Amoy testnet (2026-03-01)
   // Mainnet: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
-  address: "0xe67A5aa7e6AD435A67f52274b32467B3c2509a41",
+  address: "0x7d20fb691f21f267e6cfec574707e41b772f600b",
   abi: [
     { type: "function", name: "balanceOf", inputs: [{ name: "account", type: "address" }], outputs: [{ name: "", type: "uint256" }], stateMutability: "view" },
     { type: "function", name: "allowance", inputs: [{ name: "owner", type: "address" }, { name: "spender", type: "address" }], outputs: [{ name: "", type: "uint256" }], stateMutability: "view" },
