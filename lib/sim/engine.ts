@@ -22,10 +22,10 @@ const JACKDROP_PRIZE_BPS = [
 function defaultRoundCfg(): SimRoundConfig {
   return {
     entryPrice: ONE_USDC,
-    maxEntriesPerWalletPerRound: 10n,
+    maxEntriesPerWalletPerRound: 1000n, // 100x increase for testnet
     minPool: 100n * ONE_USDC,
     minTime: 60n, // 60 seconds for sim (real: 3600)
-    maxTotalEntries: 1000n,
+    maxTotalEntries: 100_000n, // increased to accommodate higher per-wallet limit
     winnersPerRound: 2n,
     maxRoundDuration: 120n, // 2 min for sim (real: 86400 = 24h)
     minEntriesForJackDropTicket: 3n, // min 3 entries per round to earn a JackDrop ticket (Sybil mitigation)
@@ -70,13 +70,13 @@ export class SimulationEngine {
     const cfg = defaultRoundCfg();
     const round1 = createRound(1n, cfg);
 
-    const JACK_TARGET = 100_000n * ONE_USDC; // 100K USDC initial JackDrop target (admin-configurable)
+    const JACK_TARGET = 1_000n * ONE_USDC; // 1K USDC JackDrop target for testnet (easier to trigger)
 
     this.state = {
       currentRoundId: 1n,
       rounds: new Map([[1, round1]]),
       roundCfg: cfg,
-      jackpotBalance: 99_950n * ONE_USDC, // Pre-filled near target for demo (100K target)
+      jackpotBalance: 950n * ONE_USDC, // Pre-filled near target for demo (1K target)
       devBalance: 0n,
       aggregatorBalance: 0n,
       cycleId: 1n,
@@ -101,7 +101,7 @@ export class SimulationEngine {
       spaRewardResults: new Map(),
       // ─── Security mitigations ───
       maxJackDropTicketsPerWallet: 100n,      // raised to 100 to reward loyal players
-      minCycleParticipantsForJackDrop: 50n,   // min 50 unique wallets before JackDrop can trigger
+      minCycleParticipantsForJackDrop: 10n,   // min 10 unique wallets before JackDrop can trigger (lowered for testnet)
       pausedAt: null,
       maxPauseDuration: 120,                  // 2min for sim (real: 604800 = 7 days)
       pendingRoundCfg: null,

@@ -411,8 +411,170 @@ export default function PlayPage() {
           </div>
         </div>
 
+        {/* Network warning */}
+        {isConnected && wrongNetwork && (
+          <div className="mt-6 rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-300">
+            Wrong network detected. Please switch to{" "}
+            <b>Polygon Amoy</b> testnet.
+          </div>
+        )}
+
+        {/* Entry selector — PRIMARY ACTION */}
+        <div className="mt-8 rounded-3xl border border-white/10 bg-black/30 p-6">
+          <div className="text-sm font-semibold">Enter the round</div>
+
+          <div className="mt-4 flex flex-wrap items-center gap-4">
+            {/* Entry count */}
+            <div>
+              <label className="text-xs text-white/50">Entries</label>
+              <div className="mt-1 flex items-center gap-2">
+                <button
+                  onClick={() => setEntries((e) => Math.max(1, e - 1))}
+                  disabled={entries <= 1}
+                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/15 bg-black text-white hover:bg-white/5 disabled:opacity-30"
+                >
+                  −
+                </button>
+                <div className="flex h-9 w-12 items-center justify-center rounded-lg border border-white/15 bg-black text-sm font-semibold">
+                  {entries}
+                </div>
+                <button
+                  onClick={() =>
+                    setEntries((e) => Math.min(remaining || 10, e + 1))
+                  }
+                  disabled={entries >= remaining}
+                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/15 bg-black text-white hover:bg-white/5 disabled:opacity-30"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            {/* Cost display */}
+            <div>
+              <label className="text-xs text-white/50">Cost</label>
+              <div className="mt-1 text-lg font-semibold">
+                {entryPrice ? fmt(entryPrice * BigInt(entries)) : entries} USDC
+              </div>
+            </div>
+
+            {/* Referral */}
+            <div className="flex-1 min-w-[200px]">
+              <label className="text-xs text-white/50">Referrer (optional) — share your link to earn SPA rewards</label>
+              <input
+                ref={referrerRef}
+                type="text"
+                placeholder="0x..."
+                defaultValue={typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("ref") ?? "" : ""}
+                className="mt-1 w-full rounded-lg border border-white/15 bg-black px-3 py-2 text-sm text-white placeholder:text-white/30"
+              />
+            </div>
+          </div>
+
+          {/* Approve / Deposit button */}
+          <div className="mt-5">
+            {txStep === "idle" && (
+              <button
+                onClick={handleParticipate}
+                disabled={!canDeposit}
+                className={[
+                  "rounded-xl px-6 py-3 text-sm font-semibold transition-all",
+                  canDeposit
+                    ? "bg-white text-black hover:opacity-90"
+                    : "bg-white/20 text-white/60 cursor-not-allowed",
+                ].join(" ")}
+              >
+                {needsApproval
+                  ? `Approve & Deposit ${entries} ${entries === 1 ? "entry" : "entries"}`
+                  : `Deposit ${entries} ${entries === 1 ? "entry" : "entries"}`}
+              </button>
+            )}
+
+            {txStep === "approving" && (
+              <div className="flex items-center gap-3 text-sm text-yellow-400">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-yellow-400 border-t-transparent" />
+                Approving USDC spend... confirm in your wallet
+              </div>
+            )}
+
+            {txStep === "depositing" && (
+              <div className="flex items-center gap-3 text-sm text-blue-400">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-400 border-t-transparent" />
+                Depositing entries... confirm in your wallet
+              </div>
+            )}
+
+            {txStep === "success" && (
+              <div className="rounded-2xl border border-green-500/20 bg-green-500/10 p-4">
+                <div className="text-sm font-semibold text-green-400">
+                  Deposit confirmed!
+                </div>
+                <p className="mt-1 text-sm text-white/70">
+                  You entered {entries} {entries === 1 ? "entry" : "entries"} in round{" "}
+                  {roundId?.toString()}. Good luck!
+                </p>
+                <button
+                  onClick={() => setTxStep("idle")}
+                  className="mt-3 rounded-lg border border-white/20 px-4 py-2 text-sm text-white hover:bg-white/5"
+                >
+                  Enter more
+                </button>
+              </div>
+            )}
+
+            {txStep === "error" && (
+              <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-4">
+                <div className="text-sm font-semibold text-red-400">
+                  Transaction failed
+                </div>
+                <p className="mt-1 text-sm text-white/70">{errorMsg}</p>
+                <button
+                  onClick={() => {
+                    setTxStep("idle");
+                    setErrorMsg("");
+                  }}
+                  className="mt-3 rounded-lg border border-white/20 px-4 py-2 text-sm text-white hover:bg-white/5"
+                >
+                  Try again
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Insufficient balance warning */}
+          {isConnected && !wrongNetwork && !hasSufficientBalance && (
+            <p className="mt-3 text-sm text-red-400">
+              Insufficient USDC balance. You need{" "}
+              {entryPrice ? fmt(entryPrice * BigInt(entries)) : entries} USDC.
+            </p>
+          )}
+        </div>
+
+        {/* Wallet info */}
+        {isConnected && !wrongNetwork && (
+          <div className="mt-6 rounded-3xl border border-white/10 bg-black/30 p-6">
+            <div className="text-sm font-semibold">Your wallet</div>
+            <div className="mt-3 grid gap-3 sm:grid-cols-3">
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-3">
+                <div className="text-xs text-white/50">USDC balance</div>
+                <div className="text-lg font-semibold">
+                  {usdcBalance !== undefined ? fmt(usdcBalance as bigint) : "—"} USDC
+                </div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-3">
+                <div className="text-xs text-white/50">Your entries (this round)</div>
+                <div className="text-lg font-semibold">{myEntryCount}</div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-3">
+                <div className="text-xs text-white/50">Remaining capacity</div>
+                <div className="text-lg font-semibold">{remaining}</div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Status cards */}
-        <div className="mt-8 grid gap-5 md:grid-cols-3">
+        <div className="mt-6 grid gap-5 md:grid-cols-3">
           <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
             <div className="text-sm font-semibold">Round</div>
             <div className="mt-2 text-2xl font-bold">
@@ -564,168 +726,6 @@ export default function PlayPage() {
             )}
           </div>
         )}
-
-        {/* Network warning */}
-        {isConnected && wrongNetwork && (
-          <div className="mt-6 rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-300">
-            Wrong network detected. Please switch to{" "}
-            <b>Polygon Amoy</b> testnet.
-          </div>
-        )}
-
-        {/* Wallet info */}
-        {isConnected && !wrongNetwork && (
-          <div className="mt-6 rounded-3xl border border-white/10 bg-black/30 p-6">
-            <div className="text-sm font-semibold">Your wallet</div>
-            <div className="mt-3 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-3">
-                <div className="text-xs text-white/50">USDC balance</div>
-                <div className="text-lg font-semibold">
-                  {usdcBalance !== undefined ? fmt(usdcBalance as bigint) : "—"} USDC
-                </div>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-3">
-                <div className="text-xs text-white/50">Your entries (this round)</div>
-                <div className="text-lg font-semibold">{myEntryCount}</div>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-3">
-                <div className="text-xs text-white/50">Remaining capacity</div>
-                <div className="text-lg font-semibold">{remaining}</div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Entry selector */}
-        <div className="mt-6 rounded-3xl border border-white/10 bg-black/30 p-6">
-          <div className="text-sm font-semibold">Enter the round</div>
-
-          <div className="mt-4 flex flex-wrap items-center gap-4">
-            {/* Entry count */}
-            <div>
-              <label className="text-xs text-white/50">Entries</label>
-              <div className="mt-1 flex items-center gap-2">
-                <button
-                  onClick={() => setEntries((e) => Math.max(1, e - 1))}
-                  disabled={entries <= 1}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/15 bg-black text-white hover:bg-white/5 disabled:opacity-30"
-                >
-                  −
-                </button>
-                <div className="flex h-9 w-12 items-center justify-center rounded-lg border border-white/15 bg-black text-sm font-semibold">
-                  {entries}
-                </div>
-                <button
-                  onClick={() =>
-                    setEntries((e) => Math.min(remaining || 10, e + 1))
-                  }
-                  disabled={entries >= remaining}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/15 bg-black text-white hover:bg-white/5 disabled:opacity-30"
-                >
-                  +
-                </button>
-              </div>
-            </div>
-
-            {/* Cost display */}
-            <div>
-              <label className="text-xs text-white/50">Cost</label>
-              <div className="mt-1 text-lg font-semibold">
-                {entryPrice ? fmt(entryPrice * BigInt(entries)) : entries} USDC
-              </div>
-            </div>
-
-            {/* Referral */}
-            <div className="flex-1 min-w-[200px]">
-              <label className="text-xs text-white/50">Referrer (optional) — share your link to earn SPA rewards</label>
-              <input
-                ref={referrerRef}
-                type="text"
-                placeholder="0x..."
-                defaultValue={typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("ref") ?? "" : ""}
-                className="mt-1 w-full rounded-lg border border-white/15 bg-black px-3 py-2 text-sm text-white placeholder:text-white/30"
-              />
-            </div>
-          </div>
-
-          {/* Approve / Deposit button */}
-          <div className="mt-5">
-            {txStep === "idle" && (
-              <button
-                onClick={handleParticipate}
-                disabled={!canDeposit}
-                className={[
-                  "rounded-xl px-6 py-3 text-sm font-semibold transition-all",
-                  canDeposit
-                    ? "bg-white text-black hover:opacity-90"
-                    : "bg-white/20 text-white/60 cursor-not-allowed",
-                ].join(" ")}
-              >
-                {needsApproval
-                  ? `Approve & Deposit ${entries} ${entries === 1 ? "entry" : "entries"}`
-                  : `Deposit ${entries} ${entries === 1 ? "entry" : "entries"}`}
-              </button>
-            )}
-
-            {txStep === "approving" && (
-              <div className="flex items-center gap-3 text-sm text-yellow-400">
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-yellow-400 border-t-transparent" />
-                Approving USDC spend... confirm in your wallet
-              </div>
-            )}
-
-            {txStep === "depositing" && (
-              <div className="flex items-center gap-3 text-sm text-blue-400">
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-400 border-t-transparent" />
-                Depositing entries... confirm in your wallet
-              </div>
-            )}
-
-            {txStep === "success" && (
-              <div className="rounded-2xl border border-green-500/20 bg-green-500/10 p-4">
-                <div className="text-sm font-semibold text-green-400">
-                  Deposit confirmed!
-                </div>
-                <p className="mt-1 text-sm text-white/70">
-                  You entered {entries} {entries === 1 ? "entry" : "entries"} in round{" "}
-                  {roundId?.toString()}. Good luck!
-                </p>
-                <button
-                  onClick={() => setTxStep("idle")}
-                  className="mt-3 rounded-lg border border-white/20 px-4 py-2 text-sm text-white hover:bg-white/5"
-                >
-                  Enter more
-                </button>
-              </div>
-            )}
-
-            {txStep === "error" && (
-              <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-4">
-                <div className="text-sm font-semibold text-red-400">
-                  Transaction failed
-                </div>
-                <p className="mt-1 text-sm text-white/70">{errorMsg}</p>
-                <button
-                  onClick={() => {
-                    setTxStep("idle");
-                    setErrorMsg("");
-                  }}
-                  className="mt-3 rounded-lg border border-white/20 px-4 py-2 text-sm text-white hover:bg-white/5"
-                >
-                  Try again
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* Insufficient balance warning */}
-          {isConnected && !wrongNetwork && !hasSufficientBalance && (
-            <p className="mt-3 text-sm text-red-400">
-              Insufficient USDC balance. You need{" "}
-              {entryPrice ? fmt(entryPrice * BigInt(entries)) : entries} USDC.
-            </p>
-          )}
-        </div>
 
         {/* Claim section */}
         {isConnected &&

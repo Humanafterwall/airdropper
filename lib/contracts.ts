@@ -13,8 +13,8 @@ export const POLYGON_AMOY_CHAIN_ID = 80002;
 // Project contract (Airdropper V01.3)
 // ============================================================
 export const PROJECT_CONTRACT = {
-  // TODO: Replace with deployed address after Amoy deployment
-  address: "0x0000000000000000000000000000000000000000",
+  // Deployed on Polygon Amoy testnet (2026-02-27)
+  address: "0xcFEacFD2F5B3Ee260D567528853Fe13946Da401a",
   abi: [
     // ---- Read functions (views) ----
     { type: "function", name: "currentRoundId", inputs: [], outputs: [{ name: "", type: "uint256" }], stateMutability: "view" },
@@ -77,8 +77,9 @@ export const PROJECT_CONTRACT = {
 // USDC contract (ERC20 — for approve + balanceOf)
 // ============================================================
 export const USDC_CONTRACT = {
-  // Polygon mainnet USDC (Circle native)
-  address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+  // TestUSDC on Polygon Amoy testnet (2026-02-27)
+  // Mainnet: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
+  address: "0xe67A5aa7e6AD435A67f52274b32467B3c2509a41",
   abi: [
     { type: "function", name: "balanceOf", inputs: [{ name: "account", type: "address" }], outputs: [{ name: "", type: "uint256" }], stateMutability: "view" },
     { type: "function", name: "allowance", inputs: [{ name: "owner", type: "address" }, { name: "spender", type: "address" }], outputs: [{ name: "", type: "uint256" }], stateMutability: "view" },
