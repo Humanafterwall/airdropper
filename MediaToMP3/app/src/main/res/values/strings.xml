@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Media to MP3</string>
+    <string name="channel_playback">Playback</string>
+    <string name="channel_conversion">Conversion</string>
+</resources>
