@@ -1,0 +1,22 @@
+{
+  "name": "chain-forensics",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Platform-independent blockchain investigation core (tracing, clustering, labels, risk, audit)",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@noble/hashes": "^1.8.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.7"
+  }
+}
